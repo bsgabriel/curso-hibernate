@@ -1,0 +1,7 @@
+CREATE TABLE ALUNOS (
+	cod_aluno INTEGER PRIMARY KEY,
+	nome VARCHAR(40),
+	curso VARCHAR(100),
+	telefone VARCHAR(11),
+	cidade VARCHAR(100)
+);
