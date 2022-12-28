@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <!-- Configurações -->
+        <property name="hibernate.connection.driver.class">
+            org.apache.derby.jdbc.EmbeddedDriver
+        </property>
+        <property name="hibernate.connection.dialect">
+            org.hibernate.dialect.DerbyTenSixDialect
+        </property>
+        <property name="hibernate.connection.url">
+            jdbc:derby:/home/bsgabriel/projects/java/curso-hibernate/database;
+        </property>
+        <property name="hibernate.show_sql">true</property>
+        <property name="hibernate.format_sql">true</property>
+        <!-- Mapeamentos -->
+        <mapping resource="curso/database/config/derby/map/aluno.hbm.xml"/>
+    </session-factory>
+</hibernate-configuration>

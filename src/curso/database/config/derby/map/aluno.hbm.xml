@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="curso.bean.Aluno" table="alunos">
+        <id name="codAluno" column="cod_aluno" type="integer">
+            <generator class="increment"/>
+        </id>
+        <property name="nome"/>
+        <property name="cidade"/>
+        <property name="telefone"/>
+        <property name="curso"/>
+    </class>
+</hibernate-mapping>
