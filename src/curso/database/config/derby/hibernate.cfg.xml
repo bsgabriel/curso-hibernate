@@ -13,10 +13,11 @@
             org.hibernate.dialect.DerbyTenSixDialect
         </property>
         <property name="hibernate.connection.url">
-            jdbc:derby:/home/bsgabriel/projects/java/curso-hibernate/database;
+            jdbc:derby:databasea;create=true;
         </property>
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.format_sql">true</property>
+
         <!-- Mapeamentos -->
         <mapping resource="curso/database/config/derby/map/aluno.hbm.xml"/>
     </session-factory>
