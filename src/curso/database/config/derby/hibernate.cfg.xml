@@ -13,7 +13,7 @@
             org.hibernate.dialect.DerbyTenSixDialect
         </property>
         <property name="hibernate.connection.url">
-            jdbc:derby:databasea;create=true;
+            jdbc:derby:database;create=true;
         </property>
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.format_sql">true</property>
