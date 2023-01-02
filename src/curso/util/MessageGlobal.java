@@ -2,6 +2,8 @@ package curso.util;
 
 import javax.swing.*;
 
+import static curso.util.StringUtils.isBlank;
+
 public class MessageGlobal {
     private MessageGlobal() {
     }
@@ -11,7 +13,7 @@ public class MessageGlobal {
     }
 
     public static void showErrorMessage(String message, Throwable ex) {
-        if (message == null || message.isBlank()) {
+        if (isBlank(message)) {
             message = "Erro ao realizar ação";
         }
 

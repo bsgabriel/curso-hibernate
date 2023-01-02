@@ -7,6 +7,8 @@ import curso.view.MenuPrincipalView;
 import java.util.ArrayList;
 import java.util.List;
 
+import static curso.util.StringUtils.*;
+
 public class MenuPrincipalController extends MenuPrincipalView {
     String lastSearch = "";
 
@@ -51,7 +53,7 @@ public class MenuPrincipalController extends MenuPrincipalView {
 
         StringBuilder query = new StringBuilder();
         query.append("Aluno");
-        if (!filter.isBlank()) {
+        if (!isBlank(filter)) {
             query.append(" ");
             query.append("where lower(nome) like '%");
             query.append(filter.toLowerCase());
@@ -80,7 +82,7 @@ public class MenuPrincipalController extends MenuPrincipalView {
         }
 
         for (Aluno aluno : lstReturn) {
-            super.addRow(new Object[]{aluno.getCodAluno(), aluno.getNome(), aluno.getCurso(), aluno.getTelefone(), aluno.getCidade()});
+            super.addRow(new Object[]{aluno.getCodAluno(), aluno.getNome(), aluno.getCurso(), stringListToString(aluno.getTelefones()), aluno.getCidade()});
         }
     }
 

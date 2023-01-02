@@ -11,7 +11,10 @@
         </id>
         <property name="nome"/>
         <property name="cidade"/>
-        <property name="telefone"/>
         <property name="curso"/>
+        <set name="telefones" table="telefones_alunos">
+            <key column="cod_aluno"/>
+            <element column="telefone" type="string"/>
+        </set>
     </class>
 </hibernate-mapping>

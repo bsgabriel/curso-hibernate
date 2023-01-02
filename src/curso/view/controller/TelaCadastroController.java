@@ -2,10 +2,13 @@ package curso.view.controller;
 
 import curso.bean.Aluno;
 import curso.database.SessionManager;
-import curso.util.MessageGlobal;
 import curso.view.TelaCadastroView;
 
 import java.awt.*;
+
+import static curso.util.MessageGlobal.*;
+import static curso.util.StringUtils.isBlank;
+import static curso.util.StringUtils.stringToStringList;
 
 public class TelaCadastroController extends TelaCadastroView {
 
@@ -15,10 +18,6 @@ public class TelaCadastroController extends TelaCadastroView {
 
     @Override
     protected void gravar(Aluno aluno) {
-
-        if (!isRegistroValido(aluno)) {
-            return;
-        }
 
         if (aluno.getCodAluno() != null)
             gravarAlteracao(aluno);
@@ -33,67 +32,80 @@ public class TelaCadastroController extends TelaCadastroView {
             return null;
         }
 
-        if (strCodAluno.isBlank()) {
+        if (isBlank(strCodAluno)) {
             return null;
         }
 
-        Integer cod;
+        int cod;
         try {
             cod = Integer.parseInt(strCodAluno);
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            cod = null;
+            return null;
         }
         return cod;
     }
 
     @Override
-    protected boolean isRegistroValido(Aluno aluno) {
-        if (aluno.getNome() == null || aluno.getNome().isBlank()) {
-            MessageGlobal.showErrorMessage("Informe o nome do aluno");
+    protected boolean verificarCampos(String nome, String curso, String cidade, String telefones) {
+
+        if (isBlank(nome)) {
+            showErrorMessage("Informe o nome do aluno");
             return false;
         }
 
-        if (aluno.getCurso() == null || aluno.getCurso().isBlank()) {
-            MessageGlobal.showErrorMessage("Informe o curso");
+        if (isBlank(curso)) {
+            showErrorMessage("Informe o curso");
             return false;
         }
 
-        if (aluno.getCidade() == null || aluno.getCidade().isBlank()) {
-            MessageGlobal.showErrorMessage("Informe a cidade");
+        if (isBlank(cidade)) {
+            showErrorMessage("Informe a cidade");
             return false;
         }
 
-        if (aluno.getTelefone() == null || aluno.getTelefone().isBlank()) {
-            MessageGlobal.showErrorMessage("Informe o telefone");
+        if (isBlank(telefones)) {
+            showErrorMessage("Informe um telefone");
             return false;
+        }
+
+        for (String telefone : stringToStringList(telefones)) {
+            if (!isTelefoneValido(telefone))
+                return false;
+
         }
 
         return true;
     }
 
-    private void gravarAlteracao(Aluno aluno) {
-        // Verifica se o houve alteração nos dados
-        Aluno original = (Aluno) SessionManager.getInstance().searchByCode(Aluno.class, aluno.getCodAluno());
+    private void gravarAlteracao(Aluno alunoTmp) {
+        // Busca o objeto persistente do banco
+        Aluno alunoOriginal = (Aluno) SessionManager.getInstance().searchByCode(Aluno.class, alunoTmp.getCodAluno());
 
-        if (original != null && aluno.equals(original)) {
-            MessageGlobal.showInformationMessage("Não houve alteração nos registros.");
+        // Verifica se o objeto persistente é igual ao objeto temporário
+        if (alunoTmp.equals(alunoOriginal)) {
+            showInformationMessage("Não houve alteração no registro");
             return;
         }
 
-        boolean confirma = MessageGlobal.showConfirmationDialog("Confirmar alteração de registro?");
+        boolean confirma = showConfirmationDialog("Confirmar alteração de registro?");
         if (!confirma) {
             return;
         }
 
+        // atualiza o objeto persistente
         try {
-            SessionManager.getInstance().update(aluno);
+            alunoOriginal.setNome(alunoTmp.getNome());
+            alunoOriginal.setCidade(alunoTmp.getCidade());
+            alunoOriginal.setCurso(alunoTmp.getCurso());
+            alunoOriginal.setTelefones(alunoTmp.getTelefones());
+            SessionManager.getInstance().update(alunoOriginal);
         } catch (Exception ex) {
-            MessageGlobal.showErrorMessage("Não foi alterar o registro", ex);
+            showErrorMessage("Erro alterar o registro", ex);
             return;
         }
 
-        MessageGlobal.showInformationMessage("Registro alterado com sucesso!");
+        showInformationMessage("Registro alterado com sucesso!");
         closeWindow();
     }
 
@@ -101,12 +113,29 @@ public class TelaCadastroController extends TelaCadastroView {
         try {
             SessionManager.getInstance().save(aluno);
         } catch (Exception ex) {
-            MessageGlobal.showErrorMessage("Não foi criar registro", ex);
+            showErrorMessage("Erro ao criar registro", ex);
             return;
         }
 
-        MessageGlobal.showInformationMessage("Registro criado com sucesso!");
+        showInformationMessage("Registro criado com sucesso!");
         closeWindow();
     }
 
+    private boolean isTelefoneValido(String telefone) {
+        if (!telefone.matches("\\d+")) {
+            showErrorMessage(createMessageTelefoneInvalido(telefone, "Telefone deve conter apenas números"));
+            return false;
+        }
+
+        if (telefone.length() < 10 || telefone.length() > 11) {
+            showErrorMessage(createMessageTelefoneInvalido(telefone, "Telefone deve ter ter 10 dígitos (DDD + telefone fixo) ou 11 dígitos (DDD + celular)"));
+            return false;
+        }
+
+        return true;
+    }
+
+    private String createMessageTelefoneInvalido(String telefone, String descErro) {
+        return "Telefone inválido: " + telefone + "\n" + descErro;
+    }
 }

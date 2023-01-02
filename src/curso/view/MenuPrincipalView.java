@@ -8,6 +8,9 @@ import curso.view.tablemodel.TableModelAluno;
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.HashSet;
+
+import static curso.util.StringUtils.stringToStringList;
 
 public abstract class MenuPrincipalView extends JFrame {
     protected abstract void actExcluir(Aluno aluno);
@@ -62,7 +65,7 @@ public abstract class MenuPrincipalView extends JFrame {
         this.modelAlunos.addColumn("Código");
         this.modelAlunos.addColumn("Nome");
         this.modelAlunos.addColumn("Curso");
-        this.modelAlunos.addColumn("Fone");
+        this.modelAlunos.addColumn("Telefone(s)");
         this.modelAlunos.addColumn("Cidade");
         this.tblAlunos.getColumnModel().getColumn(0).setPreferredWidth(10);
         this.tblAlunos.getColumnModel().getColumn(1).setPreferredWidth(100);
@@ -126,7 +129,7 @@ public abstract class MenuPrincipalView extends JFrame {
                 if (mouseEvent.getClickCount() != 2) {
                     return;
                 }
-                
+
                 if (tblAlunos.getSelectedRow() == -1) {
                     return;
                 }
@@ -149,7 +152,10 @@ public abstract class MenuPrincipalView extends JFrame {
         aluno.setCodAluno(codAluno);
         aluno.setNome((String) modelAlunos.getValueAt(selectedLine, 1));
         aluno.setCurso((String) modelAlunos.getValueAt(selectedLine, 2));
-        aluno.setTelefone((String) modelAlunos.getValueAt(selectedLine, 3));
+
+        String strTelefones = (String) modelAlunos.getValueAt(selectedLine, 3);
+        aluno.setTelefones(new HashSet<>(stringToStringList(strTelefones)));
+
         aluno.setCidade((String) modelAlunos.getValueAt(selectedLine, 4));
         return aluno;
     }

@@ -8,6 +8,8 @@ import curso.util.ComponentFactory;
 import javax.swing.*;
 import java.awt.*;
 
+import static curso.util.StringUtils.*;
+
 public abstract class TelaCadastroView extends JDialog {
     private JTextField fldCodigo;
     private JTextField fldNome;
@@ -22,7 +24,7 @@ public abstract class TelaCadastroView extends JDialog {
 
     protected abstract Integer getCodAlunoFromField(String strCodAluno);
 
-    protected abstract boolean isRegistroValido(Aluno aluno);
+    protected abstract boolean verificarCampos(String nome, String curso, String cidade, String telefones);
 
     protected TelaCadastroView(Frame parent) {
         super(parent, "Cadastrador - Alteração/Cadastro", true);
@@ -62,7 +64,7 @@ public abstract class TelaCadastroView extends JDialog {
         pnl.add(Box.createRigidArea(new Dimension(0, 10)));
         pnl.add(ComponentFactory.createFieldWithLabel("Nome", fldNome));
         pnl.add(Box.createRigidArea(new Dimension(0, 10)));
-        pnl.add(ComponentFactory.createFieldWithLabel("Telefone", fldTelefone));
+        pnl.add(ComponentFactory.createFieldWithLabel("Telefone(s)", fldTelefone));
         pnl.add(Box.createRigidArea(new Dimension(0, 10)));
         pnl.add(ComponentFactory.createFieldWithLabel("Cidade", fldCidade));
         pnl.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -90,6 +92,9 @@ public abstract class TelaCadastroView extends JDialog {
     }
 
     private void actionConfirmar() {
+        if (!verificarCampos(fldNome.getText(), fldCurso.getText(), fldCidade.getText(), fldTelefone.getText()))
+            return;
+
         Aluno aluno = new Aluno();
 
         Integer cod = getCodAlunoFromField(fldCodigo.getText());
@@ -97,7 +102,7 @@ public abstract class TelaCadastroView extends JDialog {
         aluno.setNome(fldNome.getText());
         aluno.setCidade(fldCidade.getText());
         aluno.setCurso(fldCurso.getText());
-        aluno.setTelefone(fldTelefone.getText());
+        aluno.getTelefones().addAll(stringToStringList(fldTelefone.getText()));
         gravar(aluno);
     }
 
@@ -120,7 +125,7 @@ public abstract class TelaCadastroView extends JDialog {
 
         fldCodigo.setText(String.valueOf(aluno.getCodAluno()));
         fldNome.setText(aluno.getNome());
-        fldTelefone.setText(aluno.getTelefone());
+        fldTelefone.setText(stringListToString(aluno.getTelefones()));
         fldCidade.setText(aluno.getCidade());
         fldCurso.setText(aluno.getCurso());
 

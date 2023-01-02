@@ -1,13 +1,15 @@
 package curso.bean;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class Aluno {
     private Integer codAluno;
     private String nome;
     private String cidade;
-    private String telefone;
     private String curso;
+    private Set<String> telefones;
 
     public Integer getCodAluno() {
         return codAluno;
@@ -33,14 +35,6 @@ public class Aluno {
         this.cidade = cidade;
     }
 
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
-
     public String getCurso() {
         return curso;
     }
@@ -49,6 +43,16 @@ public class Aluno {
         this.curso = curso;
     }
 
+    public Set<String> getTelefones() {
+        if (telefones == null)
+            telefones = new HashSet<>();
+
+        return telefones;
+    }
+
+    public void setTelefones(Set<String> telefones) {
+        this.telefones = telefones;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -68,10 +72,10 @@ public class Aluno {
         if (!Objects.equals(cidade, aluno.cidade))
             return false;
 
-        if (!Objects.equals(telefone, aluno.telefone))
+        if (!Objects.equals(curso, aluno.curso))
             return false;
 
-        if (!Objects.equals(curso, aluno.curso))
+        if (!Objects.equals(telefones, aluno.telefones))
             return false;
 
         return true;
@@ -82,8 +86,8 @@ public class Aluno {
         int result = codAluno != null ? codAluno.hashCode() : 0;
         result = 31 * result + (nome != null ? nome.hashCode() : 0);
         result = 31 * result + (cidade != null ? cidade.hashCode() : 0);
-        result = 31 * result + (telefone != null ? telefone.hashCode() : 0);
         result = 31 * result + (curso != null ? curso.hashCode() : 0);
+        result = 31 * result + (telefones != null ? telefones.hashCode() : 0);
         return result;
     }
 }
