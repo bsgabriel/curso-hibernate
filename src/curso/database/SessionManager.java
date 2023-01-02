@@ -35,21 +35,18 @@ public class SessionManager {
         Transaction tx = getSession().beginTransaction();
         getSession().save(obj);
         tx.commit();
-        getSession().close();
     }
 
     public void update(Object obj) {
         Transaction tx = getSession().beginTransaction();
         getSession().update(obj);
         tx.commit();
-        getSession().close();
     }
 
     public void saveOrUpdate(Object obj) {
         Transaction tx = getSession().beginTransaction();
         getSession().saveOrUpdate(obj);
         tx.commit();
-        getSession().close();
     }
 
 
@@ -57,20 +54,15 @@ public class SessionManager {
         Transaction tx = getSession().beginTransaction();
         getSession().delete(obj);
         tx.commit();
-        getSession().close();
     }
 
     public List<Object> createQuery(String query) {
-        List lst = getSession().createQuery("from " + query).list();
-        getSession().close();
-        return new ArrayList<Object>(lst);
+        return new ArrayList<Object>(getSession().createQuery("from " + query).list());
     }
 
 
     public Object searchByCode(Class clazz, Integer cod) {
-        Object obj = getSession().get(clazz, cod);
-        getSession().close();
-        return obj;
+        return getSession().get(clazz, cod);
     }
 
 }
