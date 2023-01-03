@@ -36,6 +36,16 @@ public class MenuPrincipalController extends MenuPrincipalView {
         buscar(getSearchFieldContent(), true);
     }
 
+    @Override
+    protected String createContentTelefone(String strTelefones) {
+        StringBuilder msg = new StringBuilder();
+        for (String telefone : stringToStringList(strTelefones)) {
+            msg.append(telefone);
+            msg.append("\n");
+        }
+        return msg.toString();
+    }
+
     /**
      * Efetua a busca no banco de dados e exibe os itens na tabela
      *

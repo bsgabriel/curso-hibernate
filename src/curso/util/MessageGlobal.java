@@ -26,7 +26,11 @@ public class MessageGlobal {
 
 
     public static void showInformationMessage(String message) {
-        JOptionPane.showMessageDialog(null, message, "Info", JOptionPane.INFORMATION_MESSAGE);
+        showInformationMessage("Info", message);
+    }
+
+    public static void showInformationMessage(String title, String message) {
+        JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
     }
 
     public static boolean showConfirmationDialog(String message) {

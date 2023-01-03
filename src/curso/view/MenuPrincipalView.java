@@ -10,14 +10,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashSet;
 
+import static curso.util.MessageGlobal.showInformationMessage;
 import static curso.util.StringUtils.stringToStringList;
 
 public abstract class MenuPrincipalView extends JFrame {
-    protected abstract void actExcluir(Aluno aluno);
-
-    protected abstract void actExibirTelaCadastro(Aluno aluno);
-
-    protected abstract void actBuscar(String filtro);
 
     private JButton btnPesquisar;
     private JButton btnNovo;
@@ -29,6 +25,14 @@ public abstract class MenuPrincipalView extends JFrame {
     private TableModelAluno modelAlunos;
     private CellConstraints cc;
     private int previousSelectedRow;
+
+    protected abstract void actExcluir(Aluno aluno);
+
+    protected abstract void actExibirTelaCadastro(Aluno aluno);
+
+    protected abstract void actBuscar(String filtro);
+
+    protected abstract String createContentTelefone(String strTelefones);
 
     protected MenuPrincipalView() {
         this.setTitle("Cadastrador");
@@ -130,11 +134,18 @@ public abstract class MenuPrincipalView extends JFrame {
                     return;
                 }
 
-                if (tblAlunos.getSelectedRow() == -1) {
+                int row = tblAlunos.getSelectedRow();
+                int column = tblAlunos.getSelectedColumn();
+                if (row == -1) {
                     return;
                 }
 
-                actExibirTelaCadastro(getSelectedRowData());
+                String cellContent = String.valueOf(tblAlunos.getValueAt(row, column));
+                if (column == 3) {
+                    showInformationMessage(tblAlunos.getColumnName(column), createContentTelefone(cellContent));
+                } else {
+                    showInformationMessage(tblAlunos.getColumnName(column), cellContent);
+                }
             }
         });
     }
