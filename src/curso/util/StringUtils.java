@@ -15,6 +15,11 @@ public class StringUtils {
             strReturn.append(str);
             strReturn.append(separator);
         }
+
+        if (strReturn.lastIndexOf(";") == strReturn.length() - 1) {
+            strReturn.deleteCharAt(strReturn.length() - 1);
+        }
+
         return strReturn.toString();
     }
 
