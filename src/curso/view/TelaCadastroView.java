@@ -8,7 +8,8 @@ import curso.util.ComponentFactory;
 import javax.swing.*;
 import java.awt.*;
 
-import static curso.util.StringUtils.*;
+import static curso.util.StringUtils.stringListToString;
+import static curso.util.StringUtils.stringToStringList;
 
 public abstract class TelaCadastroView extends JDialog {
     private JTextField fldCodigo;
