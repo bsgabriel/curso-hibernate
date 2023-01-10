@@ -8,10 +8,8 @@ import curso.view.tablemodel.TableModelAluno;
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.HashSet;
 
 import static curso.util.MessageGlobal.showInformationMessage;
-import static curso.util.StringUtils.stringToStringList;
 
 public abstract class MenuPrincipalView extends JFrame {
 
@@ -24,7 +22,6 @@ public abstract class MenuPrincipalView extends JFrame {
 
     private TableModelAluno modelAlunos;
     private CellConstraints cc;
-    private int previousSelectedRow;
 
     protected abstract void actExcluir(Aluno aluno);
 
@@ -33,6 +30,8 @@ public abstract class MenuPrincipalView extends JFrame {
     protected abstract void actBuscar(String filtro);
 
     protected abstract String createContentTelefone(String strTelefones);
+
+    protected abstract Aluno getRowData(int row);
 
     protected MenuPrincipalView() {
         this.setTitle("Cadastrador");
@@ -51,7 +50,6 @@ public abstract class MenuPrincipalView extends JFrame {
         this.add(new JScrollPane(tblAlunos), cc.xy(2, 4));
         this.add(createButtonPnl(), cc.xy(2, 6));
         this.addEvents();
-        this.previousSelectedRow = tblAlunos.getSelectedRow();
         actBuscar(getSearchFieldContent());
     }
 
@@ -110,18 +108,9 @@ public abstract class MenuPrincipalView extends JFrame {
         });
 
         this.btnExcluir.addActionListener(actionEvent -> {
-            int selectedRow = tblAlunos.getSelectedRow();
-
-            if (selectedRow == -1) {
+            if (tblAlunos.getSelectedRow() == -1) {
                 return;
             }
-
-            if (selectedRow == previousSelectedRow) {
-                tblAlunos.clearSelection();
-                return;
-            }
-
-            previousSelectedRow = selectedRow;
 
             actExcluir(getSelectedRowData());
         });
@@ -151,24 +140,7 @@ public abstract class MenuPrincipalView extends JFrame {
     }
 
     private Aluno getSelectedRowData() {
-        int selectedLine = tblAlunos.getSelectedRow();
-
-        if (selectedLine == -1) {
-            return null;
-        }
-
-        Integer codAluno = (Integer) modelAlunos.getValueAt(selectedLine, 0);
-
-        Aluno aluno = new Aluno();
-        aluno.setCodAluno(codAluno);
-        aluno.setNome((String) modelAlunos.getValueAt(selectedLine, 1));
-        aluno.setCurso((String) modelAlunos.getValueAt(selectedLine, 2));
-
-        String strTelefones = (String) modelAlunos.getValueAt(selectedLine, 3);
-        aluno.setTelefones(new HashSet<>(stringToStringList(strTelefones)));
-
-        aluno.setCidade((String) modelAlunos.getValueAt(selectedLine, 4));
-        return aluno;
+        return getRowData(tblAlunos.getSelectedRow());
     }
 
     protected void clearTable() {
@@ -185,5 +157,9 @@ public abstract class MenuPrincipalView extends JFrame {
             search = "";
         }
         return search;
+    }
+
+    protected TableModelAluno getModelAlunos() {
+        return modelAlunos;
     }
 }

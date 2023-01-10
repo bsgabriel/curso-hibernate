@@ -1,20 +1,22 @@
 package curso.view.controller;
 
 import curso.bean.Aluno;
-import curso.database.SessionManager;
+import curso.database.dao.AlunoDAO;
 import curso.view.MenuPrincipalView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static curso.util.StringUtils.*;
 
 public class MenuPrincipalController extends MenuPrincipalView {
-    String lastSearch = "";
+    private AlunoDAO alunoDAO;
+    private String lastSearch = "";
 
-    @Override
-    protected void actBuscar(String filter) {
-        buscar(filter, false);
+    private AlunoDAO getAlunoDAO() {
+        if (alunoDAO == null)
+            alunoDAO = new AlunoDAO();
+
+        return alunoDAO;
     }
 
     @Override
@@ -22,7 +24,7 @@ public class MenuPrincipalController extends MenuPrincipalView {
         if (aluno == null || aluno.getCodAluno() == null) {
             return;
         }
-        SessionManager.getInstance().delete(aluno);
+        getAlunoDAO().delete(aluno);
         buscar(getSearchFieldContent(), true);
     }
 
@@ -37,6 +39,11 @@ public class MenuPrincipalController extends MenuPrincipalView {
     }
 
     @Override
+    protected void actBuscar(String filter) {
+        buscar(filter, false);
+    }
+
+    @Override
     protected String createContentTelefone(String strTelefones) {
         StringBuilder msg = new StringBuilder();
         for (String telefone : stringToStringList(strTelefones)) {
@@ -46,6 +53,15 @@ public class MenuPrincipalController extends MenuPrincipalView {
         return msg.toString();
     }
 
+    protected Aluno getRowData(int row) {
+        if (row == -1) {
+            return null;
+        }
+
+        Integer codAluno = (Integer) getModelAlunos().getValueAt(row, 0);
+        return getAlunoDAO().buscarPorCodigo(codAluno);
+    }
+
     /**
      * Efetua a busca no banco de dados e exibe os itens na tabela
      *
@@ -53,43 +69,19 @@ public class MenuPrincipalController extends MenuPrincipalView {
      * @param ignoreLastSearch Indica se deve ignorar a última busca. Se for false, só efetuará a busca caso o filtro atual e o da busca anterior sejam diferentes.
      */
     private void buscar(String filter, boolean ignoreLastSearch) {
-        if (filter == null) {
+        if (isBlank(filter))
             filter = "";
-        }
 
-        if (filter.equals(lastSearch) && !ignoreLastSearch) {
+        if (filter.equals(lastSearch) && !ignoreLastSearch)
             return;
-        }
 
-        StringBuilder query = new StringBuilder();
-        query.append("Aluno");
-        if (!isBlank(filter)) {
-            query.append(" ");
-            query.append("where lower(nome) like '%");
-            query.append(filter.toLowerCase());
-            query.append("%'");
-        }
-
-        lastSearch = query.toString();
-        List<Object> lstQuery = SessionManager.getInstance().createQuery(query.toString());
-        List<Aluno> lstReturn = new ArrayList<>();
-
-        if (lstQuery == null) {
-            return;
-        }
-
-        for (Object obj : lstQuery) {
-            if (obj instanceof Aluno) {
-                lstReturn.add((Aluno) obj);
-            }
-        }
-
+        lastSearch = filter;
+        List<Aluno> lstReturn = getAlunoDAO().buscarPorNome(filter);
 
         super.clearTable();
 
-        if (lstReturn.isEmpty()) {
+        if (lstReturn.isEmpty())
             return;
-        }
 
         for (Aluno aluno : lstReturn) {
             super.addRow(new Object[]{aluno.getCodAluno(), aluno.getNome(), aluno.getCurso(), stringListToString(aluno.getTelefones()), aluno.getCidade()});

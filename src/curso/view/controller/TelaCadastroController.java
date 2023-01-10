@@ -1,7 +1,7 @@
 package curso.view.controller;
 
 import curso.bean.Aluno;
-import curso.database.SessionManager;
+import curso.database.dao.AlunoDAO;
 import curso.view.TelaCadastroView;
 
 import java.awt.*;
@@ -11,6 +11,15 @@ import static curso.util.StringUtils.isBlank;
 import static curso.util.StringUtils.stringToStringList;
 
 public class TelaCadastroController extends TelaCadastroView {
+
+    private AlunoDAO alunoDAO;
+
+    private AlunoDAO getAlunoDAO() {
+        if (alunoDAO == null)
+            alunoDAO = new AlunoDAO();
+
+        return alunoDAO;
+    }
 
     public TelaCadastroController(Frame parent) {
         super(parent);
@@ -80,7 +89,7 @@ public class TelaCadastroController extends TelaCadastroView {
 
     private void gravarAlteracao(Aluno alunoTmp) {
         // Busca o objeto persistente do banco
-        Aluno alunoOriginal = (Aluno) SessionManager.getInstance().searchByCode(Aluno.class, alunoTmp.getCodAluno());
+        Aluno alunoOriginal = getAlunoDAO().buscarPorCodigo(alunoTmp.getCodAluno());
 
         // Verifica se o objeto persistente é igual ao objeto temporário
         if (alunoTmp.equals(alunoOriginal)) {
@@ -99,7 +108,7 @@ public class TelaCadastroController extends TelaCadastroView {
             alunoOriginal.setCidade(alunoTmp.getCidade());
             alunoOriginal.setCurso(alunoTmp.getCurso());
             alunoOriginal.setTelefones(alunoTmp.getTelefones());
-            SessionManager.getInstance().update(alunoOriginal);
+            getAlunoDAO().atualizar(alunoOriginal);
         } catch (Exception ex) {
             showErrorMessage("Erro alterar o registro", ex);
             return;
@@ -111,7 +120,7 @@ public class TelaCadastroController extends TelaCadastroView {
 
     private void gravarNovoRegistro(Aluno aluno) {
         try {
-            SessionManager.getInstance().save(aluno);
+            getAlunoDAO().gravar(aluno);
         } catch (Exception ex) {
             showErrorMessage("Erro ao criar registro", ex);
             return;

@@ -1,10 +1,12 @@
 package curso.bean;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-public class Aluno {
+public class Aluno implements Serializable {
+
     private Integer codAluno;
     private String nome;
     private String cidade;
